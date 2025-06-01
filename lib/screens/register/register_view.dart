@@ -24,64 +24,66 @@ class RegisterView extends StatelessWidget {
           ),
         ],
       ),
-      body: Form(
-        key: state.formKey,
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text('Register', style: TextStyle(fontSize: 32),),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: CustomTextfield(
-                controller: state.nameCtrl,
-                validator: FormValidation.validateName,
-                label: 'Enter your name',
+      body: SingleChildScrollView(
+        child: Form(
+          key: state.formKey,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              const Text('Register', style: TextStyle(fontSize: 32),),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomTextfield(
+                  controller: state.nameCtrl,
+                  validator: FormValidation.validateName,
+                  label: 'Enter your name',
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: CustomTextfield(
-                controller: state.emailCtrl,
-                validator: FormValidation.validateEmail,
-                keyboardType: TextInputType.emailAddress,
-                label: 'Enter your email',
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomTextfield(
+                  controller: state.emailCtrl,
+                  validator: FormValidation.validateEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  label: 'Enter your email',
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: CustomTextfield(
-                controller: state.passCtrl,
-                validator: FormValidation.validatePassword,
-                obsecure: true,
-                label: 'Enter your password',
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomTextfield(
+                  controller: state.passCtrl,
+                  validator: FormValidation.validatePassword,
+                  obsecure: true,
+                  label: 'Enter your password',
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: CustomTextfield(
-                controller: state.confirmPassCtrl,
-                validator: FormValidation.validatePassword,
-                obsecure: true,
-                label: 'Confirm password',
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomTextfield(
+                  controller: state.confirmPassCtrl,
+                  validator: FormValidation.validatePassword,
+                  obsecure: true,
+                  label: 'Confirm password',
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: CustomCheckbox(
-                label: 'I agree to the terms & conditions.',
-                value: state.agreedToTerms,
-                onChanged: state.setAgreement,
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CustomCheckbox(
+                  label: 'I agree to the terms & conditions.',
+                  value: state.agreedToTerms,
+                  onChanged: state.setAgreement,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(onPressed: state.register, child: const Text('Register')),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+              ElevatedButton(onPressed: state.register, child: const Text('Register')),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

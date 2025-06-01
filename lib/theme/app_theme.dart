@@ -73,4 +73,20 @@ class AppTheme {
       displayColor: Colors.white,
     ),
   );
+
+  static Color backgroundColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.black
+          : Colors.white;
+
+  static Color hourLineColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.white24
+          : Colors.black26;
+
+  static Color timeTextColor(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? Colors.white
+          : Colors.black87;
+
 }

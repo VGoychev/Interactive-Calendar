@@ -50,7 +50,7 @@ class LoginState extends State<Login> {
       emailCtrl.clear();
       passCtrl.clear();
       print('User logged in!');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Calendar()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Calendar(onToggleTheme: widget.onToggleTheme, themeMode: widget.themeMode,)));
     } on FirebaseAuthException catch (e) {
       String message = 'Login failed';
       if (e.code == 'user-not-found') {

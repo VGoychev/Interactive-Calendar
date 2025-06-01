@@ -1,10 +1,8 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:interactive_calendar_app/widgets/custom_day_view.dart';
-import 'package:interactive_calendar_app/widgets/custom_month_view.dart';
+import 'package:interactive_calendar_app/screens/calendar/calendar.dart';
 import 'package:interactive_calendar_app/widgets/custom_segmented_button.dart';
-import 'package:interactive_calendar_app/widgets/custom_week_view.dart';
-import 'package:intl/intl.dart';
+
 
 class CalendarView extends StatelessWidget {
   final int selectedIndex;
@@ -12,8 +10,10 @@ class CalendarView extends StatelessWidget {
   final String selectedView;
   final ValueChanged<String?> onViewChanged;
   final EventController<CalendarEventData<Object?>> eventController;
+  final CalendarState state;
 
-  const CalendarView({
+  const CalendarView(
+    this.state, {
     super.key,
     required this.selectedIndex,
     required this.onItemTapped,
@@ -22,27 +22,9 @@ class CalendarView extends StatelessWidget {
     required this.eventController,
   });
 
-  Widget _getView(BuildContext context) {
-    return CalendarControllerProvider(
-      controller: eventController,
-      child: Builder(
-        builder: (context) {
-          switch (selectedView) {
-            case 'Day':
-              return CustomDayView(eventController: eventController);
-            case 'Week':
-              return CustomWeekView(eventController: eventController);
-            case 'Month':
-            default:
-              return CustomMonthView(eventController: eventController);
-          }
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = state.widget.themeMode == ThemeMode.dark;
     return Scaffold(
       appBar: AppBar(
         title: CustomSegmentedButton(
@@ -56,8 +38,21 @@ class CalendarView extends StatelessWidget {
             ButtonSegment(value: 'Day', label: Text('Day')),
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: state.widget.onToggleTheme,
+            icon: Icon(
+              isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+              color: isDarkMode ? Colors.black : Colors.white,
+              size: 36,
+            ),
+          ),
+        ],
       ),
-      body: _getView(context),
+      body: getCalendarView(
+          context: context,
+          eventController: eventController,
+          selectedView: selectedView),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: onItemTapped,
@@ -72,6 +67,7 @@ class CalendarView extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.add),),
     );
   }
 }
