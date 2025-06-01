@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/screens/register/register.dart';
 import 'package:interactive_calendar_app/utils/validations/form_validation.dart';
 import 'package:interactive_calendar_app/widgets/custom_checkbox.dart';
-import 'package:interactive_calendar_app/widgets/custom_textfield.dart';
+import 'package:interactive_calendar_app/widgets/custom_textformfield.dart';
 
 class RegisterView extends StatelessWidget {
   final RegisterState state;
@@ -34,7 +34,7 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: CustomTextfield(
+                child: CustomTextFormfield(
                   controller: state.nameCtrl,
                   validator: FormValidation.validateName,
                   label: 'Enter your name',
@@ -43,7 +43,7 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: CustomTextfield(
+                child: CustomTextFormfield(
                   controller: state.emailCtrl,
                   validator: FormValidation.validateEmail,
                   keyboardType: TextInputType.emailAddress,
@@ -53,7 +53,7 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: CustomTextfield(
+                child: CustomTextFormfield(
                   controller: state.passCtrl,
                   validator: FormValidation.validatePassword,
                   obsecure: true,
@@ -63,7 +63,7 @@ class RegisterView extends StatelessWidget {
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: CustomTextfield(
+                child: CustomTextFormfield(
                   controller: state.confirmPassCtrl,
                   validator: FormValidation.validatePassword,
                   obsecure: true,

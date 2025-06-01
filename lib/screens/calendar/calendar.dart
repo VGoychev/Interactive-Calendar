@@ -1,5 +1,6 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/screens/add_event/add_event.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar_view.dart';
 import 'package:interactive_calendar_app/screens/profile/profile_view.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
@@ -30,11 +31,13 @@ class CalendarState extends State<Calendar> {
       _selectedIndex = index;
     });
   }
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _initPrefs();
   }
+
   Future<void> _initPrefs() async {
     await _prefsService.init();
   }
@@ -45,6 +48,11 @@ class CalendarState extends State<Calendar> {
         _selectedView = view;
       });
     }
+  }
+
+  void onAddEventClick() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddEvent()));
   }
 
   @override

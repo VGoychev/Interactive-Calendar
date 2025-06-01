@@ -67,7 +67,7 @@ class CalendarView extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(onPressed: state.onAddEventClick, child: Icon(Icons.add),),
     );
   }
 }

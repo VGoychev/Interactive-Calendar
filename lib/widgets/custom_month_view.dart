@@ -18,11 +18,9 @@ class CustomMonthView extends StatelessWidget {
           margin: const EdgeInsets.all(1),
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: isToday
-                ? Theme.of(context).colorScheme.secondary
-                : isInMonth
-                    ? Theme.of(context).colorScheme.surface
-                    : Theme.of(context).colorScheme.surface.withOpacity(0.05),
+            color: isInMonth
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.surface.withOpacity(0.05),
             border: Border.all(
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
@@ -34,18 +32,35 @@ class CustomMonthView extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.topRight,
-                child: Text(
-                  '${date.day}',
-                  style: TextStyle(
-                    fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
-                    color: isInMonth
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.4),
-                  ),
-                ),
+                child: isToday
+                    ? Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '${date.day}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        '${date.day}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: isInMonth
+                              ? Theme.of(context).colorScheme.onSurface
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.4),
+                        ),
+                      ),
               ),
               if (events.isNotEmpty)
                 Align(
