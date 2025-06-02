@@ -6,8 +6,13 @@ import 'package:intl/intl.dart';
 class CustomWeekView extends StatelessWidget {
   final List<CalendarEventData<Object?>> events;
   final EventController<Object?> eventController;
-  const CustomWeekView(
-      {super.key, this.events = const [], required this.eventController});
+
+  const CustomWeekView({
+    super.key,
+    this.events = const [],
+    required this.eventController,
+  });
+
   @override
   Widget build(BuildContext context) {
     return WeekView(

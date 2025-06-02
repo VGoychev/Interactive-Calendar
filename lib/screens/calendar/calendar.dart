@@ -27,6 +27,8 @@ class CalendarState extends State<Calendar> {
   int _selectedIndex = 0;
   String _selectedView = 'Month';
   final EventController<Object?> _eventController = EventController<Object?>();
+  DateTime? _selectedDate;
+  bool _isDateSelectedFromMonth = false;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -42,16 +44,16 @@ class CalendarState extends State<Calendar> {
   }
 
   Future<void> _loadEventsForCurrentUser() async {
-  final uid = await AuthService().getCurrentUserId();
-  if (uid != 'guest') {
-    final events = await FirestoreService().getUserEvents(uid);
-    for (CalendarEvent event in events) {
-      _addEventToCalendar(event);
+    final uid = await AuthService().getCurrentUserId();
+    if (uid != 'guest') {
+      final events = await FirestoreService().getUserEvents(uid);
+      for (CalendarEvent event in events) {
+        _addEventToCalendar(event);
+      }
+    } else {
+      // Handle not logged in ---- GUEST USER
     }
-  } else {
-    // Handle not logged in ---- GUEST USER
   }
-}
 
   Future<void> _initPrefs() async {
     await _prefsService.init();
@@ -61,13 +63,21 @@ class CalendarState extends State<Calendar> {
     if (view != null) {
       setState(() {
         _selectedView = view;
+        _selectedDate = null;
+        _isDateSelectedFromMonth = false;
       });
     }
   }
 
+  void _onDateSelected(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+      _selectedView = 'Day';
+      _isDateSelectedFromMonth = true;
+    });
+  }
 
   void _addEventToCalendar(dynamic event) {
-
     DateTime startTime = event.startTime;
     DateTime endTime = event.endTime;
 
@@ -75,7 +85,6 @@ class CalendarState extends State<Calendar> {
     bool crossesMidnight = endTime.day != startTime.day;
 
     if (crossesMidnight) {
-      
       DateTime firstEventEnd = DateTime(
         startTime.year,
         startTime.month,
@@ -85,7 +94,8 @@ class CalendarState extends State<Calendar> {
         59,
       );
 
-      DateTime firstEventDate = DateTime(startTime.year, startTime.month, startTime.day);
+      DateTime firstEventDate =
+          DateTime(startTime.year, startTime.month, startTime.day);
 
       final firstEvent = CalendarEventData<Object?>(
         date: firstEventDate,
@@ -105,7 +115,8 @@ class CalendarState extends State<Calendar> {
         0,
       );
 
-      DateTime secondEventDate = DateTime(endTime.year, endTime.month, endTime.day);
+      DateTime secondEventDate =
+          DateTime(endTime.year, endTime.month, endTime.day);
 
       final secondEvent = CalendarEventData<Object?>(
         date: secondEventDate,
@@ -119,8 +130,9 @@ class CalendarState extends State<Calendar> {
       _eventController.add(firstEvent);
       _eventController.add(secondEvent);
     } else {
-      DateTime eventDate = DateTime(startTime.year, startTime.month, startTime.day);
-      
+      DateTime eventDate =
+          DateTime(startTime.year, startTime.month, startTime.day);
+
       final calendarEvent = CalendarEventData<Object?>(
         date: eventDate,
         startTime: startTime,
@@ -146,22 +158,28 @@ class CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
-    return IndexedStack(
-      index: _selectedIndex,
-      children: [
-        CalendarView(
-          this,
-          selectedView: _selectedView,
-          onViewChanged: _onViewChanged,
-          eventController: _eventController,
-          selectedIndex: _selectedIndex,
-          onItemTapped: _onItemTapped,
-        ),
-        ProfileView(
-          selectedIndex: _selectedIndex,
-          onItemTapped: _onItemTapped,
-        ),
-      ],
+    return CalendarControllerProvider(
+      controller: _eventController,
+      child: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          CalendarView(
+            this,
+            selectedView: _selectedView,
+            onViewChanged: _onViewChanged,
+            eventController: _eventController,
+            selectedIndex: _selectedIndex,
+            onItemTapped: _onItemTapped,
+            onDateSelected: _onDateSelected,
+            selectedDate: _selectedDate,
+            isDateSelectedFromMonth: _isDateSelectedFromMonth,
+          ),
+          ProfileView(
+            selectedIndex: _selectedIndex,
+            onItemTapped: _onItemTapped,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -170,6 +188,8 @@ Widget getCalendarView({
   required BuildContext context,
   required EventController<Object?> eventController,
   required String selectedView,
+  required void Function(DateTime) onDateSelected,
+  DateTime? selectedDate,
 }) {
   return CalendarControllerProvider(
     controller: eventController,
@@ -177,12 +197,20 @@ Widget getCalendarView({
       builder: (context) {
         switch (selectedView) {
           case 'Day':
-            return CustomDayView(eventController: eventController);
+            return CustomDayView(
+              eventController: eventController,
+              initialDate: selectedDate ?? DateTime.now(),
+            );
           case 'Week':
-            return CustomWeekView(eventController: eventController);
+            return CustomWeekView(
+              eventController: eventController,
+            );
           case 'Month':
           default:
-            return CustomMonthView(eventController: eventController);
+            return CustomMonthView(
+              eventController: eventController,
+              onDateSelected: onDateSelected,
+            );
         }
       },
     ),

@@ -6,20 +6,26 @@ import 'package:intl/intl.dart';
 class CustomDayView extends StatelessWidget {
   final List<CalendarEventData<Object?>> events;
   final EventController<Object?> eventController;
-  const CustomDayView(
-      {super.key, this.events = const [], required this.eventController});
+  final DateTime? initialDate;
+
+  const CustomDayView({
+    super.key,
+    this.events = const [],
+    required this.eventController,
+    this.initialDate,
+  });
   @override
   Widget build(BuildContext context) {
     return DayView(
       controller: eventController,
+      initialDay: initialDate,
       backgroundColor: AppTheme.backgroundColor(context),
       dateStringBuilder: (date, {secondaryDate}) {
         final formatter = DateFormat('EEEE - MMMM d, y');
         return formatter.format(date);
       },
       timeStringBuilder: (dateTime, {secondaryDate}) {
-        return DateFormat('HH:mm')
-            .format(dateTime);
+        return DateFormat('HH:mm').format(dateTime);
       },
       headerStyle: HeaderStyle(
         headerTextStyle: TextStyle(
@@ -43,10 +49,7 @@ class CustomDayView extends StatelessWidget {
         );
       },
       liveTimeIndicatorSettings: const LiveTimeIndicatorSettings(
-        color: Colors.redAccent,
-        height: 1.5,
-        offset: 15
-      ),
+          color: Colors.redAccent, height: 1.5, offset: 15),
     );
   }
 }

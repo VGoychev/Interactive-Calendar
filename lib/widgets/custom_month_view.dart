@@ -5,12 +5,20 @@ import 'package:intl/intl.dart';
 class CustomMonthView extends StatelessWidget {
   final List<CalendarEventData<Object?>> events;
   final EventController<Object?> eventController;
-  const CustomMonthView(
-      {super.key, this.events = const [], required this.eventController});
+  final ValueChanged<DateTime> onDateSelected;
+  const CustomMonthView({
+    super.key,
+    this.events = const [],
+    required this.eventController,
+    required this.onDateSelected,
+  });
   @override
   Widget build(BuildContext context) {
     return MonthView<Object?>(
       controller: eventController,
+      onCellTap: (events, date) {
+        onDateSelected(date);
+      },
       cellBuilder: (DateTime date, List<CalendarEventData<Object?>> events,
           bool isToday, bool isInMonth, bool isSelected) {
         return Container(

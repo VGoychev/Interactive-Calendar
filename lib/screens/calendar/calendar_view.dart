@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar.dart';
 import 'package:interactive_calendar_app/widgets/custom_segmented_button.dart';
 
-
 class CalendarView extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
@@ -11,6 +10,9 @@ class CalendarView extends StatelessWidget {
   final ValueChanged<String?> onViewChanged;
   final EventController<Object?> eventController;
   final CalendarState state;
+  final Function(DateTime) onDateSelected;
+  final DateTime? selectedDate;
+  final bool isDateSelectedFromMonth;
 
   const CalendarView(
     this.state, {
@@ -20,6 +22,9 @@ class CalendarView extends StatelessWidget {
     required this.selectedView,
     required this.onViewChanged,
     required this.eventController,
+    required this.onDateSelected,
+    this.selectedDate,
+    this.isDateSelectedFromMonth = false
   });
 
   @override
@@ -50,9 +55,12 @@ class CalendarView extends StatelessWidget {
         ],
       ),
       body: getCalendarView(
-          context: context,
-          eventController: eventController,
-          selectedView: selectedView),
+        context: context,
+        eventController: eventController,
+        selectedView: selectedView,
+        onDateSelected: onDateSelected,
+        selectedDate: selectedDate,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: onItemTapped,
@@ -67,7 +75,10 @@ class CalendarView extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(onPressed: state.onAddEventClick, child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: state.onAddEventClick,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
