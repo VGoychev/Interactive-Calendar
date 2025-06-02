@@ -114,7 +114,7 @@ class AddEventView extends StatelessWidget {
                     child: Padding(
                   padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: state.createEvent,
                     child: Text('Add'),
                   ),
                 )),

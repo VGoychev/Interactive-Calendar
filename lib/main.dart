@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return CalendarControllerProvider(
-      controller: EventController<CalendarEventData<Object?>>(),
+      controller: EventController<Object?>(),
       child: MaterialApp(
         title: 'Interactive Calendar',
         theme: AppTheme.lightTheme,

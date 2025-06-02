@@ -1,8 +1,11 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/screens/add_event/add_event.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar_view.dart';
 import 'package:interactive_calendar_app/screens/profile/profile_view.dart';
+import 'package:interactive_calendar_app/services/auth_service.dart';
+import 'package:interactive_calendar_app/services/firestore_service.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
 import 'package:interactive_calendar_app/widgets/custom_day_view.dart';
 import 'package:interactive_calendar_app/widgets/custom_month_view.dart';
@@ -14,6 +17,7 @@ class Calendar extends StatefulWidget {
 
   const Calendar(
       {super.key, required this.onToggleTheme, required this.themeMode});
+
   @override
   State<Calendar> createState() => CalendarState();
 }
@@ -22,9 +26,7 @@ class CalendarState extends State<Calendar> {
   final SharedPrefsService _prefsService = SharedPrefsService();
   int _selectedIndex = 0;
   String _selectedView = 'Month';
-
-  final EventController<CalendarEventData<Object?>> _eventController =
-      EventController();
+  final EventController<Object?> _eventController = EventController<Object?>();
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,7 +38,20 @@ class CalendarState extends State<Calendar> {
   void initState() {
     super.initState();
     _initPrefs();
+    _loadEventsForCurrentUser();
   }
+
+  Future<void> _loadEventsForCurrentUser() async {
+  final uid = await AuthService().getCurrentUserId();
+  if (uid != 'guest') {
+    final events = await FirestoreService().getUserEvents(uid);
+    for (CalendarEvent event in events) {
+      _addEventToCalendar(event);
+    }
+  } else {
+    // Handle not logged in ---- GUEST USER
+  }
+}
 
   Future<void> _initPrefs() async {
     await _prefsService.init();
@@ -50,9 +65,83 @@ class CalendarState extends State<Calendar> {
     }
   }
 
+
+  void _addEventToCalendar(dynamic event) {
+
+    DateTime startTime = event.startTime;
+    DateTime endTime = event.endTime;
+
+    // Checking if event crosses midnight
+    bool crossesMidnight = endTime.day != startTime.day;
+
+    if (crossesMidnight) {
+      
+      DateTime firstEventEnd = DateTime(
+        startTime.year,
+        startTime.month,
+        startTime.day,
+        23,
+        59,
+        59,
+      );
+
+      DateTime firstEventDate = DateTime(startTime.year, startTime.month, startTime.day);
+
+      final firstEvent = CalendarEventData<Object?>(
+        date: firstEventDate,
+        startTime: startTime,
+        endTime: firstEventEnd,
+        title: '${event.title ?? 'Untitled Event'} (Day 1)',
+        description: event.description ?? '',
+        color: Theme.of(context).colorScheme.primary,
+      );
+
+      DateTime secondEventStart = DateTime(
+        endTime.year,
+        endTime.month,
+        endTime.day,
+        0,
+        0,
+        0,
+      );
+
+      DateTime secondEventDate = DateTime(endTime.year, endTime.month, endTime.day);
+
+      final secondEvent = CalendarEventData<Object?>(
+        date: secondEventDate,
+        startTime: secondEventStart,
+        endTime: endTime,
+        title: '${event.title ?? 'Untitled Event'} (Day 2)',
+        description: event.description ?? '',
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+      );
+
+      _eventController.add(firstEvent);
+      _eventController.add(secondEvent);
+    } else {
+      DateTime eventDate = DateTime(startTime.year, startTime.month, startTime.day);
+      
+      final calendarEvent = CalendarEventData<Object?>(
+        date: eventDate,
+        startTime: startTime,
+        endTime: endTime,
+        title: event.title ?? 'Untitled Event',
+        description: event.description ?? '',
+        color: Theme.of(context).colorScheme.primary,
+      );
+
+      _eventController.add(calendarEvent);
+    }
+  }
+
   void onAddEventClick() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AddEvent()));
+        context,
+        MaterialPageRoute(
+          builder: (context) => AddEvent(onEventAdded: (event) {
+            _addEventToCalendar(event);
+          }),
+        ));
   }
 
   @override
@@ -79,7 +168,7 @@ class CalendarState extends State<Calendar> {
 
 Widget getCalendarView({
   required BuildContext context,
-  required EventController<CalendarEventData<Object?>> eventController,
+  required EventController<Object?> eventController,
   required String selectedView,
 }) {
   return CalendarControllerProvider(

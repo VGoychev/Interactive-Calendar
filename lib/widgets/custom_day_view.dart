@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 class CustomDayView extends StatelessWidget {
   final List<CalendarEventData<Object?>> events;
-  final EventController<CalendarEventData<Object?>> eventController;
+  final EventController<Object?> eventController;
   const CustomDayView(
       {super.key, this.events = const [], required this.eventController});
   @override

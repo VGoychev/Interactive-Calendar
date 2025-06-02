@@ -9,7 +9,7 @@ class CalendarView extends StatelessWidget {
   final Function(int) onItemTapped;
   final String selectedView;
   final ValueChanged<String?> onViewChanged;
-  final EventController<CalendarEventData<Object?>> eventController;
+  final EventController<Object?> eventController;
   final CalendarState state;
 
   const CalendarView(

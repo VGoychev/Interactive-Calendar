@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar.dart';
 import 'package:interactive_calendar_app/screens/login/login_view.dart';
+import 'package:interactive_calendar_app/services/auth_service.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
 
 class Login extends StatefulWidget {
@@ -44,24 +44,31 @@ class LoginState extends State<Login> {
 
     if (!formKey.currentState!.validate()) return;
 
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+    final authService = AuthService();
+    String? result = await authService.loginUser(
+      email: email,
+      password: password,
+    );
+
+    if (result == null) {
       emailCtrl.clear();
       passCtrl.clear();
-      print('User logged in!');
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Calendar(onToggleTheme: widget.onToggleTheme, themeMode: widget.themeMode,)));
-    } on FirebaseAuthException catch (e) {
-      String message = 'Login failed';
-      if (e.code == 'user-not-found') {
-        message = 'No user found with that email.';
-      } else if (e.code == 'wrong-password') {
-        message = 'Incorrect password.';
-      }
 
       if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Calendar(
+              onToggleTheme: widget.onToggleTheme,
+              themeMode: widget.themeMode,
+            ),
+          ),
+        );
+      }
+    } else {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
+          SnackBar(content: Text(result)),
         );
       }
     }

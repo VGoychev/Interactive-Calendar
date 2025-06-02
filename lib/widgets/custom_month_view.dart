@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 class CustomMonthView extends StatelessWidget {
   final List<CalendarEventData<Object?>> events;
-  final EventController<CalendarEventData<Object?>> eventController;
+  final EventController<Object?> eventController;
   const CustomMonthView(
       {super.key, this.events = const [], required this.eventController});
   @override

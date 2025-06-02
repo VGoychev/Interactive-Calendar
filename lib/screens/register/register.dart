@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/screens/register/register_view.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:interactive_calendar_app/services/auth_service.dart';
 
 class Register extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -9,6 +8,7 @@ class Register extends StatefulWidget {
 
   const Register(
       {super.key, required this.onToggleTheme, required this.themeMode});
+      
   @override
   State<StatefulWidget> createState() => RegisterState();
 }
@@ -41,7 +41,8 @@ class RegisterState extends State<Register> {
 
     if (!agreedToTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("You must agree to the terms & conditions.")),
+        const SnackBar(
+            content: Text("You must agree to the terms & conditions.")),
       );
       return;
     }
@@ -57,49 +58,26 @@ class RegisterState extends State<Register> {
       return;
     }
 
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+    final authService = AuthService();
 
-      final uid = userCredential.user!.uid;
+    String? result = await authService.registerUser(
+      name: name,
+      email: email,
+      password: passCtrl.text,
+    );
 
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'name': name,
-        'email': email,
-        'createdAt': Timestamp.now(),
-      });
-
-      await userCredential.user!.updateDisplayName(name);
-      await userCredential.user!.reload();
-
+    if (result == null) {
       emailCtrl.clear();
       passCtrl.clear();
       confirmPassCtrl.clear();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Account created successfully!")),
       );
       Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      String errorMessage;
-
-      if (e.code == 'email-already-in-use') {
-        errorMessage =
-            'This email is already in use. Please log in or use a different email.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'The email address is not valid.';
-      } else if (e.code == 'weak-password') {
-        errorMessage = 'The password is too weak.';
-      } else {
-        errorMessage = 'Registration failed. Please try again.';
-      }
-      
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
-    } catch (e, stacktrace) {
-      print(stacktrace);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration failed: $e")),
+        SnackBar(content: Text(result)),
       );
     }
   }
