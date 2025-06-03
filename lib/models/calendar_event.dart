@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CalendarEvent {
-  final String? id;
+  final String id;
   final String title;
   final String description;
   final DateTime date;
@@ -10,7 +10,7 @@ class CalendarEvent {
   final Color? color;
 
   CalendarEvent({
-    this.id,
+    required this.id,
     required this.title,
     required this.description,
     required this.date,

@@ -53,6 +53,10 @@ class AddEventState extends State<AddEvent> {
       endDateTime = endDateTime.add(Duration(days: 1));
     }
 
+    if (!endDateTime.isAfter(startDateTime)) {
+      endDateTime = startDateTime.add(const Duration(minutes: 1));
+    }
+
     try {
       final id = await FirestoreService().createEvent(
         uid: uid,

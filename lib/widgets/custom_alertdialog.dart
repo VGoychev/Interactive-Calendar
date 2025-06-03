@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_view/calendar_view.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/utils/events/event_helpers.dart';
 import 'package:intl/intl.dart';
 
@@ -15,6 +16,8 @@ class CustomAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CalendarEvent? realEvent = event.event as CalendarEvent?;
+
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
       contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
@@ -64,7 +67,8 @@ class CustomAlertDialog extends StatelessWidget {
                     Theme.of(context).colorScheme.onSecondary.withOpacity(0.6)),
           ),
           Text(
-            "from ${DateFormat('HH:mm').format(event.startTime!)} to ${DateFormat('HH:mm').format(event.endTime!)}",
+            "from ${DateFormat('HH:mm').format(realEvent?.startTime ?? event.startTime!)} "
+            "to ${DateFormat('HH:mm').format(realEvent?.endTime ?? event.endTime!)}",
             style: TextStyle(
                 fontSize: 12,
                 color:

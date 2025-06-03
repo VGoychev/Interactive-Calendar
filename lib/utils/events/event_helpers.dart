@@ -10,7 +10,7 @@ Future<void> deleteCalendarEvent({
 }) async {
   final calendarEvent = event.event as CalendarEvent;
 
-  await FirestoreService().deleteEvent(eventId: calendarEvent.id!, uid: uid);
+  await FirestoreService().deleteEvent(eventId: calendarEvent.id, uid: uid);
 
   final eventsToRemove = controller.allEvents
       .where((e) =>
@@ -18,8 +18,8 @@ Future<void> deleteCalendarEvent({
           (e.event as CalendarEvent).id == calendarEvent.id)
       .toList();
 
-  for (final e in eventsToRemove) {
-    controller.remove(e);
+  for (final event in eventsToRemove) {
+    controller.remove(event);
   }
 }
 
@@ -32,7 +32,6 @@ void addEventToController({
   DateTime endTime = event.endTime;
 
   bool crossesMidnight = endTime.day != startTime.day;
-
   if (crossesMidnight) {
     DateTime firstEventEnd = DateTime(
       startTime.year,
@@ -43,7 +42,8 @@ void addEventToController({
       59,
     );
 
-    DateTime firstEventDate = DateTime(startTime.year, startTime.month, startTime.day);
+    DateTime firstEventDate =
+        DateTime(startTime.year, startTime.month, startTime.day);
 
     final firstEvent = CalendarEventData<CalendarEvent>(
       date: firstEventDate,
@@ -64,7 +64,8 @@ void addEventToController({
       0,
     );
 
-    DateTime secondEventDate = DateTime(endTime.year, endTime.month, endTime.day);
+    DateTime secondEventDate =
+        DateTime(endTime.year, endTime.month, endTime.day);
 
     final secondEvent = CalendarEventData<CalendarEvent>(
       date: secondEventDate,
@@ -79,12 +80,20 @@ void addEventToController({
     controller.add(firstEvent);
     controller.add(secondEvent);
   } else {
-    DateTime eventDate = DateTime(startTime.year, startTime.month, startTime.day);
+    DateTime eventDate =
+        DateTime(startTime.year, startTime.month, startTime.day);
+
+    // Enforcing visual minimum height of 40 minutes to visualize the event normal
+    final visualMinDuration = Duration(minutes: 40);
+    final realDuration = endTime.difference(startTime);
+    final adjustedEndTime = realDuration < visualMinDuration
+        ? startTime.add(visualMinDuration)
+        : endTime;
 
     final calendarEvent = CalendarEventData<CalendarEvent>(
       date: eventDate,
       startTime: startTime,
-      endTime: endTime,
+      endTime: adjustedEndTime,
       title: event.title,
       description: event.description,
       color: Theme.of(context).colorScheme.primary,
