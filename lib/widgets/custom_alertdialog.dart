@@ -34,11 +34,12 @@ class CustomAlertDialog extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                   textAlign: TextAlign.start,
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.edit_calendar_outlined,
-                    color: Colors.orange.shade500,
+                TextButton(
+                  onPressed: () => print("Happy"),
+                  child: Text('Edit'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    textStyle: const TextStyle(fontSize: 14),
                   ),
                 )
               ]),
@@ -98,11 +99,71 @@ class CustomAlertDialog extends StatelessWidget {
                   "Delete Event",
                   style: TextStyle(color: Colors.red),
                 ),
-                onPressed: () async {
-                  await deleteCalendarEvent(
-                      event: event, controller: eventController, uid: uid);
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    builder: (sheetContext) {
+                      final screenWidth = MediaQuery.of(context).size.width;
 
-                  Navigator.of(context).pop();
+                      return SizedBox(
+                        width: screenWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                'Are you sure you want to delete this event?',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 20),
+                              Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      child: const Text('Delete'),
+                                      onPressed: () async {
+                                        Navigator.of(sheetContext).pop();
+                                        await deleteCalendarEvent(
+                                          event: event,
+                                          controller: eventController,
+                                          uid: uid,
+                                        );
+                                        Future.microtask(() {
+                                          Navigator.of(context).pop();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: TextButton(
+                                      child: const Text('Cancel'),
+                                      onPressed: () =>
+                                          Navigator.of(sheetContext).pop(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ),
