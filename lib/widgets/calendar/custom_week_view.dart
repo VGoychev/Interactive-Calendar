@@ -14,6 +14,7 @@ class CustomWeekView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
     return WeekView(
       controller: eventController,
       backgroundColor: AppTheme.backgroundColor(context),
@@ -27,6 +28,8 @@ class CustomWeekView extends StatelessWidget {
       ),
       hourIndicatorSettings: HourIndicatorSettings(
           color: AppTheme.hourLineColor(context), offset: 5),
+      eventTileBuilder: (date, events, boundary, start, end) =>
+          _buildEventTile(context, events.first, onPrimary),
       onEventTap: (events, date) {
         if (events.isNotEmpty) {
           final event = events.first;
@@ -77,6 +80,33 @@ class CustomWeekView extends StatelessWidget {
       decoration: const BoxDecoration(color: Colors.orange),
       leftIconConfig: IconDataConfig(color: color),
       rightIconConfig: IconDataConfig(color: color),
+    );
+  }
+
+  Widget _buildEventTile(
+      BuildContext context, CalendarEventData eventData, Color onPrimary) {
+    final CalendarEvent event = eventData.event as CalendarEvent;
+
+    return SizedBox(
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.orangeAccent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              event.title.split('').join('\n'),
+              style: TextStyle(
+                fontSize: 12,
+                color: onPrimary,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            )),
+      ),
     );
   }
 

@@ -82,7 +82,7 @@ class CustomAlertDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 6),
               child: Text(
-                "Description: ${event.description}",
+                "${event.description}",
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

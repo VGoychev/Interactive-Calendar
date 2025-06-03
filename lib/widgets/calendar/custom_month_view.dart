@@ -42,13 +42,9 @@ class CustomMonthView extends StatelessWidget {
       margin: const EdgeInsets.all(1),
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: isInMonth
-            ? theme.surface
-            : theme.surface.withOpacity(0.05),
+        color: isInMonth ? theme.surface : theme.surface.withOpacity(0.05),
         border: Border.all(
-          color: isSelected
-              ? theme.primary
-              : theme.onSurface.withOpacity(0.1),
+          color: isSelected ? theme.primary : theme.onSurface.withOpacity(0.1),
         ),
         borderRadius: BorderRadius.circular(6),
       ),
@@ -92,9 +88,7 @@ class CustomMonthView extends StatelessWidget {
       '$day',
       style: TextStyle(
         fontWeight: FontWeight.normal,
-        color: isInMonth
-            ? theme.onSurface
-            : theme.onSurface.withOpacity(0.4),
+        color: isInMonth ? theme.onSurface : theme.onSurface.withOpacity(0.4),
       ),
     );
   }
@@ -124,9 +118,11 @@ class CustomMonthView extends StatelessWidget {
     final weekdays = DateFormat.E().dateSymbols.SHORTWEEKDAYS;
     final theme = Theme.of(context).colorScheme;
 
+    final adjustedIndex = (weekday + 1) % 7;
+    final weekdayName = weekdays[adjustedIndex];
     return Center(
       child: Text(
-        weekdays[weekday % 7],
+        weekdayName,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: theme.primary,
