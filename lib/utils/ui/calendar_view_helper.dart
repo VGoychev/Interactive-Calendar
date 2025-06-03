@@ -28,6 +28,7 @@ Widget getCalendarView({
           case 'Week':
             return CustomWeekView(
               eventController: eventController,
+              uid: uid,
             );
           case 'Month':
           default:
