@@ -142,9 +142,7 @@ class CustomAlertDialog extends StatelessWidget {
                                           controller: eventController,
                                           uid: uid,
                                         );
-                                        Future.microtask(() {
-                                          Navigator.of(context).pop();
-                                        });
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                   ),
