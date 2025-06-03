@@ -4,7 +4,7 @@ import 'package:interactive_calendar_app/models/calendar_event.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addEvent({
+  Future<String> createEvent({
     required String uid,
     required String title,
     required String description,
@@ -12,7 +12,6 @@ class FirestoreService {
     required DateTime endTime,
     String color = '#2196F3',
   }) async {
-
     final docRef = _firestore.collection('events').doc();
     final now = DateTime.now();
 
@@ -28,6 +27,7 @@ class FirestoreService {
     };
 
     await docRef.set(eventData);
+    return docRef.id;
   }
 
   Future<void> addUser(
@@ -44,7 +44,7 @@ class FirestoreService {
     });
   }
 
-   Future<List<CalendarEvent>> getUserEvents(String uid) async {
+  Future<List<CalendarEvent>> getUserEvents(String uid) async {
     try {
       final snapshot = await _firestore
           .collection('events')
@@ -59,5 +59,27 @@ class FirestoreService {
       print('Error fetching events: $e');
       return [];
     }
+  }
+
+  Future<void> deleteEvent({
+    required String eventId,
+    required String uid,
+  }) async {
+    final docRef = _firestore.collection('events').doc(eventId);
+
+    final snapshot = await docRef.get();
+
+    if (!snapshot.exists) {
+      throw Exception('Event not found');
+    }
+
+    final data = snapshot.data();
+    final createdBy = data?['createdBy'];
+
+    if (createdBy != uid) {
+      throw Exception('You are not authorized to delete this event');
+    }
+
+    await docRef.delete();
   }
 }

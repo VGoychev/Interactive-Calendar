@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CalendarEvent {
+  final String? id;
   final String title;
   final String description;
   final DateTime date;
@@ -9,6 +10,7 @@ class CalendarEvent {
   final Color? color;
 
   CalendarEvent({
+    this.id,
     required this.title,
     required this.description,
     required this.date,
@@ -19,6 +21,7 @@ class CalendarEvent {
 
   factory CalendarEvent.fromMap(Map<String, dynamic> map) {
     return CalendarEvent(
+      id: map['id'],
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       date: DateTime.parse(map['startTime']),

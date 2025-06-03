@@ -1,20 +1,19 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:intl/intl.dart';
 
 class CustomMonthView extends StatelessWidget {
-  final List<CalendarEventData<Object?>> events;
-  final EventController<Object?> eventController;
+  final EventController<CalendarEvent> eventController;
   final ValueChanged<DateTime> onDateSelected;
   const CustomMonthView({
     super.key,
-    this.events = const [],
     required this.eventController,
     required this.onDateSelected,
   });
   @override
   Widget build(BuildContext context) {
-    return MonthView<Object?>(
+    return MonthView(
       controller: eventController,
       onCellTap: (events, date) {
         onDateSelected(date);
@@ -52,7 +51,7 @@ class CustomMonthView extends StatelessWidget {
                         child: Text(
                           '${date.day}',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

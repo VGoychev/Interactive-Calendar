@@ -1,0 +1,96 @@
+import 'package:calendar_view/calendar_view.dart';
+import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
+import 'package:interactive_calendar_app/services/firestore_service.dart';
+
+Future<void> deleteCalendarEvent({
+  required CalendarEventData<Object?> event,
+  required EventController<Object?> controller,
+  required String uid,
+}) async {
+  final calendarEvent = event.event as CalendarEvent;
+
+  await FirestoreService().deleteEvent(eventId: calendarEvent.id!, uid: uid);
+
+  final eventsToRemove = controller.allEvents
+      .where((e) =>
+          e.event is CalendarEvent &&
+          (e.event as CalendarEvent).id == calendarEvent.id)
+      .toList();
+
+  for (final e in eventsToRemove) {
+    controller.remove(e);
+  }
+}
+
+void addEventToController({
+  required CalendarEvent event,
+  required EventController<CalendarEvent> controller,
+  required BuildContext context,
+}) {
+  DateTime startTime = event.startTime;
+  DateTime endTime = event.endTime;
+
+  bool crossesMidnight = endTime.day != startTime.day;
+
+  if (crossesMidnight) {
+    DateTime firstEventEnd = DateTime(
+      startTime.year,
+      startTime.month,
+      startTime.day,
+      23,
+      59,
+      59,
+    );
+
+    DateTime firstEventDate = DateTime(startTime.year, startTime.month, startTime.day);
+
+    final firstEvent = CalendarEventData<CalendarEvent>(
+      date: firstEventDate,
+      startTime: startTime,
+      endTime: firstEventEnd,
+      title: '${event.title} (Day 1)',
+      description: event.description,
+      color: Theme.of(context).colorScheme.primary,
+      event: event,
+    );
+
+    DateTime secondEventStart = DateTime(
+      endTime.year,
+      endTime.month,
+      endTime.day,
+      0,
+      0,
+      0,
+    );
+
+    DateTime secondEventDate = DateTime(endTime.year, endTime.month, endTime.day);
+
+    final secondEvent = CalendarEventData<CalendarEvent>(
+      date: secondEventDate,
+      startTime: secondEventStart,
+      endTime: endTime,
+      title: '${event.title} (Day 2)',
+      description: event.description,
+      color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+      event: event,
+    );
+
+    controller.add(firstEvent);
+    controller.add(secondEvent);
+  } else {
+    DateTime eventDate = DateTime(startTime.year, startTime.month, startTime.day);
+
+    final calendarEvent = CalendarEventData<CalendarEvent>(
+      date: eventDate,
+      startTime: startTime,
+      endTime: endTime,
+      title: event.title,
+      description: event.description,
+      color: Theme.of(context).colorScheme.primary,
+      event: event,
+    );
+
+    controller.add(calendarEvent);
+  }
+}

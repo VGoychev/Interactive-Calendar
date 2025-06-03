@@ -7,9 +7,7 @@ import 'package:interactive_calendar_app/screens/profile/profile_view.dart';
 import 'package:interactive_calendar_app/services/auth_service.dart';
 import 'package:interactive_calendar_app/services/firestore_service.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
-import 'package:interactive_calendar_app/widgets/custom_day_view.dart';
-import 'package:interactive_calendar_app/widgets/custom_month_view.dart';
-import 'package:interactive_calendar_app/widgets/custom_week_view.dart';
+import 'package:interactive_calendar_app/utils/events/event_helpers.dart';
 
 class Calendar extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -26,9 +24,11 @@ class CalendarState extends State<Calendar> {
   final SharedPrefsService _prefsService = SharedPrefsService();
   int _selectedIndex = 0;
   String _selectedView = 'Month';
-  final EventController<Object?> _eventController = EventController<Object?>();
+  final EventController<CalendarEvent> _eventController =
+      EventController<CalendarEvent>();
   DateTime? _selectedDate;
   bool _isDateSelectedFromMonth = false;
+  String? _uid;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -45,10 +45,14 @@ class CalendarState extends State<Calendar> {
 
   Future<void> _loadEventsForCurrentUser() async {
     final uid = await AuthService().getCurrentUserId();
+    setState(() {
+      _uid = uid;
+    });
     if (uid != 'guest') {
       final events = await FirestoreService().getUserEvents(uid);
       for (CalendarEvent event in events) {
-        _addEventToCalendar(event);
+        addEventToController(
+            event: event, controller: _eventController, context: context);
       }
     } else {
       // Handle not logged in ---- GUEST USER
@@ -77,87 +81,22 @@ class CalendarState extends State<Calendar> {
     });
   }
 
-  void _addEventToCalendar(dynamic event) {
-    DateTime startTime = event.startTime;
-    DateTime endTime = event.endTime;
-
-    // Checking if event crosses midnight
-    bool crossesMidnight = endTime.day != startTime.day;
-
-    if (crossesMidnight) {
-      DateTime firstEventEnd = DateTime(
-        startTime.year,
-        startTime.month,
-        startTime.day,
-        23,
-        59,
-        59,
-      );
-
-      DateTime firstEventDate =
-          DateTime(startTime.year, startTime.month, startTime.day);
-
-      final firstEvent = CalendarEventData<Object?>(
-        date: firstEventDate,
-        startTime: startTime,
-        endTime: firstEventEnd,
-        title: '${event.title ?? 'Untitled Event'} (Day 1)',
-        description: event.description ?? '',
-        color: Theme.of(context).colorScheme.primary,
-      );
-
-      DateTime secondEventStart = DateTime(
-        endTime.year,
-        endTime.month,
-        endTime.day,
-        0,
-        0,
-        0,
-      );
-
-      DateTime secondEventDate =
-          DateTime(endTime.year, endTime.month, endTime.day);
-
-      final secondEvent = CalendarEventData<Object?>(
-        date: secondEventDate,
-        startTime: secondEventStart,
-        endTime: endTime,
-        title: '${event.title ?? 'Untitled Event'} (Day 2)',
-        description: event.description ?? '',
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
-      );
-
-      _eventController.add(firstEvent);
-      _eventController.add(secondEvent);
-    } else {
-      DateTime eventDate =
-          DateTime(startTime.year, startTime.month, startTime.day);
-
-      final calendarEvent = CalendarEventData<Object?>(
-        date: eventDate,
-        startTime: startTime,
-        endTime: endTime,
-        title: event.title ?? 'Untitled Event',
-        description: event.description ?? '',
-        color: Theme.of(context).colorScheme.primary,
-      );
-
-      _eventController.add(calendarEvent);
-    }
-  }
-
   void onAddEventClick() {
     Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => AddEvent(onEventAdded: (event) {
-            _addEventToCalendar(event);
+            addEventToController(
+                event: event, controller: _eventController, context: context);
           }),
         ));
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_uid == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return CalendarControllerProvider(
       controller: _eventController,
       child: IndexedStack(
@@ -173,6 +112,7 @@ class CalendarState extends State<Calendar> {
             onDateSelected: _onDateSelected,
             selectedDate: _selectedDate,
             isDateSelectedFromMonth: _isDateSelectedFromMonth,
+            uid: _uid!,
           ),
           ProfileView(
             selectedIndex: _selectedIndex,
@@ -182,37 +122,4 @@ class CalendarState extends State<Calendar> {
       ),
     );
   }
-}
-
-Widget getCalendarView({
-  required BuildContext context,
-  required EventController<Object?> eventController,
-  required String selectedView,
-  required void Function(DateTime) onDateSelected,
-  DateTime? selectedDate,
-}) {
-  return CalendarControllerProvider(
-    controller: eventController,
-    child: Builder(
-      builder: (context) {
-        switch (selectedView) {
-          case 'Day':
-            return CustomDayView(
-              eventController: eventController,
-              initialDate: selectedDate ?? DateTime.now(),
-            );
-          case 'Week':
-            return CustomWeekView(
-              eventController: eventController,
-            );
-          case 'Month':
-          default:
-            return CustomMonthView(
-              eventController: eventController,
-              onDateSelected: onDateSelected,
-            );
-        }
-      },
-    ),
-  );
 }

@@ -14,7 +14,6 @@ class AddEvent extends StatefulWidget {
 
 class AddEventState extends State<AddEvent> {
   late final TextEditingController titleCtrl, descCtrl;
-  final FirestoreService _firestoreService = FirestoreService();
   DateTime selectedDate = DateTime.now();
   TimeOfDay startTime = TimeOfDay(hour: 9, minute: 0);
   TimeOfDay endTime = TimeOfDay(hour: 10, minute: 0);
@@ -49,14 +48,13 @@ class AddEventState extends State<AddEvent> {
       endTime.minute,
     );
 
-    // Fix cross-midnight events --- if end time is before or equal to start time, adding one day
-    if (endDateTime.isBefore(startDateTime) ||
-        endDateTime.isAtSameMomentAs(startDateTime)) {
+    // Fix cross-midnight events --- if end time is before, adding one day
+    if (endDateTime.isBefore(startDateTime)) {
       endDateTime = endDateTime.add(Duration(days: 1));
     }
 
     try {
-      await _firestoreService.addEvent(
+      final id = await FirestoreService().createEvent(
         uid: uid,
         title: titleCtrl.text,
         description: descCtrl.text,
@@ -65,6 +63,7 @@ class AddEventState extends State<AddEvent> {
       );
 
       final event = CalendarEvent(
+        id: id,
         title: titleCtrl.text,
         description: descCtrl.text,
         date: selectedDate,

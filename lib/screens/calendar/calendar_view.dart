@@ -1,6 +1,8 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar.dart';
+import 'package:interactive_calendar_app/utils/ui/calendar_view_helper.dart';
 import 'package:interactive_calendar_app/widgets/custom_segmented_button.dart';
 
 class CalendarView extends StatelessWidget {
@@ -8,11 +10,12 @@ class CalendarView extends StatelessWidget {
   final Function(int) onItemTapped;
   final String selectedView;
   final ValueChanged<String?> onViewChanged;
-  final EventController<Object?> eventController;
+  final EventController<CalendarEvent> eventController;
   final CalendarState state;
   final Function(DateTime) onDateSelected;
   final DateTime? selectedDate;
   final bool isDateSelectedFromMonth;
+  final String uid;
 
   const CalendarView(
     this.state, {
@@ -24,7 +27,8 @@ class CalendarView extends StatelessWidget {
     required this.eventController,
     required this.onDateSelected,
     this.selectedDate,
-    this.isDateSelectedFromMonth = false
+    this.isDateSelectedFromMonth = false,
+    required this.uid,
   });
 
   @override
@@ -60,6 +64,7 @@ class CalendarView extends StatelessWidget {
         selectedView: selectedView,
         onDateSelected: onDateSelected,
         selectedDate: selectedDate,
+        uid: uid,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,

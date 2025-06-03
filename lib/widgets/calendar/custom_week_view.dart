@@ -1,15 +1,14 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/theme/app_theme.dart';
 import 'package:intl/intl.dart';
 
 class CustomWeekView extends StatelessWidget {
-  final List<CalendarEventData<Object?>> events;
-  final EventController<Object?> eventController;
+  final EventController<CalendarEvent> eventController;
 
   const CustomWeekView({
     super.key,
-    this.events = const [],
     required this.eventController,
   });
 
