@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/firebase_options.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
-import 'package:interactive_calendar_app/screens/login/login.dart';
+import 'package:interactive_calendar_app/screens/root/root_screen.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
 import 'package:interactive_calendar_app/theme/app_theme.dart';
 
@@ -58,7 +58,10 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: _themeMode,
-        home: Login(onToggleTheme: _toggleTheme, themeMode: _themeMode),
+        home: RootScreen(
+          onToggleTheme: _toggleTheme,
+          themeMode: _themeMode,
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );

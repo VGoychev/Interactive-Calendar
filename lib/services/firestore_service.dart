@@ -82,4 +82,42 @@ class FirestoreService {
 
     await docRef.delete();
   }
+
+  Future<void> updateEvent({
+    required String eventId,
+    required String uid,
+    required String title,
+    required String description,
+    required DateTime startTime,
+    required DateTime endTime,
+    String? color,
+  }) async {
+    final docRef = _firestore.collection('events').doc(eventId);
+
+    final snapshot = await docRef.get();
+    if (!snapshot.exists) {
+      throw Exception('Event not found');
+    }
+
+    final data = snapshot.data();
+    final createdBy = data?['createdBy'];
+
+    if (createdBy != uid) {
+      throw Exception('You are not authorized to update this event');
+    }
+
+    final updatedData = {
+      'title': title.trim(),
+      'description': description.trim(),
+      'startTime': startTime.toIso8601String(),
+      'endTime': endTime.toIso8601String(),
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+
+    if (color != null) {
+      updatedData['color'] = color;
+    }
+
+    await docRef.update(updatedData);
+  }
 }

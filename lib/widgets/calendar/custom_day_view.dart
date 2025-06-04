@@ -6,7 +6,7 @@ import 'package:interactive_calendar_app/widgets/custom_alertdialog.dart';
 import 'package:intl/intl.dart';
 
 class CustomDayView extends StatelessWidget {
-  final EventController<Object?> eventController;
+  final EventController<CalendarEvent> eventController;
   final DateTime? initialDate;
   final String uid;
   const CustomDayView({

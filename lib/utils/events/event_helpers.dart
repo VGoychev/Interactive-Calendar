@@ -1,6 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
+import 'package:interactive_calendar_app/screens/add_event/add_event.dart';
 import 'package:interactive_calendar_app/services/firestore_service.dart';
 
 Future<void> deleteCalendarEvent({
@@ -102,4 +103,30 @@ void addEventToController({
 
     controller.add(calendarEvent);
   }
+}
+
+void openEditEventScreen({
+  required BuildContext context,
+  required CalendarEventData<CalendarEvent> event,
+  required EventController<CalendarEvent> eventController,
+}) {
+  Navigator.of(context).pop();
+
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => AddEvent(
+      onEventAdded: (updatedEvent) {
+        eventController.removeWhere((e) =>
+            e.event is CalendarEvent &&
+            (e.event as CalendarEvent).id == (event.event as CalendarEvent).id);
+
+        addEventToController(
+          event: updatedEvent,
+          controller: eventController,
+          context: context,
+        );
+      },
+      existingEvent: event.event,
+      isEditing: true,
+    ),
+  ));
 }

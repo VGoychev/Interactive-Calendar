@@ -12,7 +12,7 @@ import 'package:interactive_calendar_app/utils/events/event_helpers.dart';
 class Calendar extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
-
+  
   const Calendar(
       {super.key, required this.onToggleTheme, required this.themeMode});
 
@@ -81,15 +81,28 @@ class CalendarState extends State<Calendar> {
     });
   }
 
-  void onAddEventClick() {
+  void onAddEventClick({CalendarEvent? existingEvent}) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AddEvent(onEventAdded: (event) {
-            addEventToController(
-                event: event, controller: _eventController, context: context);
-          }),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddEvent(
+          existingEvent: existingEvent,
+          onEventAdded: (event) {
+            setState(() {
+              _eventController.removeWhere((e) {
+                return e.event?.id == event.id;
+              });
+
+              addEventToController(
+                event: event,
+                controller: _eventController,
+                context: context,
+              );
+            });
+          },
+        ),
+      ),
+    );
   }
 
   @override

@@ -5,8 +5,8 @@ import 'package:interactive_calendar_app/utils/events/event_helpers.dart';
 import 'package:intl/intl.dart';
 
 class CustomAlertDialog extends StatelessWidget {
-  final EventController<Object?> eventController;
-  final CalendarEventData<Object?> event;
+  final EventController<CalendarEvent> eventController;
+  final CalendarEventData<CalendarEvent> event;
   final String uid;
 
   const CustomAlertDialog({
@@ -41,7 +41,11 @@ class CustomAlertDialog extends StatelessWidget {
           children: [
             const Text("Event Details", style: TextStyle(fontSize: 16)),
             TextButton(
-              onPressed: () => print("Happy"),
+              onPressed: () => openEditEventScreen(
+                context: context,
+                event: event,
+                eventController: eventController,
+              ),
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.primary,
                 textStyle: const TextStyle(fontSize: 14),

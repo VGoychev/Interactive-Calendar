@@ -6,8 +6,15 @@ import 'package:interactive_calendar_app/services/firestore_service.dart';
 
 class AddEvent extends StatefulWidget {
   final Function(CalendarEvent) onEventAdded;
+  final CalendarEvent? existingEvent;
+  final bool isEditing;
 
-  const AddEvent({super.key, required this.onEventAdded});
+  const AddEvent({
+    super.key,
+    required this.onEventAdded,
+    this.existingEvent,
+    this.isEditing = false,
+  });
   @override
   State<StatefulWidget> createState() => AddEventState();
 }
@@ -23,8 +30,23 @@ class AddEventState extends State<AddEvent> {
   void initState() {
     super.initState();
     _loadUid();
-    titleCtrl = TextEditingController();
-    descCtrl = TextEditingController();
+    _initializeControllers();
+  }
+
+  void _initializeControllers() {
+    final event = widget.existingEvent;
+
+    titleCtrl = TextEditingController(text: event?.title ?? '');
+    descCtrl = TextEditingController(text: event?.description ?? '');
+    selectedDate = event?.date ?? DateTime.now();
+
+    startTime = event != null
+        ? TimeOfDay.fromDateTime(event.startTime)
+        : const TimeOfDay(hour: 9, minute: 0);
+
+    endTime = event != null
+        ? TimeOfDay.fromDateTime(event.endTime)
+        : const TimeOfDay(hour: 10, minute: 0);
   }
 
   Future<void> _loadUid() async {
@@ -79,6 +101,59 @@ class AddEventState extends State<AddEvent> {
       Navigator.pop(context);
     } catch (e) {
       print("Failed to add event: $e");
+    }
+  }
+
+  void updateEvent() async {
+    DateTime startDateTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      startTime.hour,
+      startTime.minute,
+    );
+
+    DateTime endDateTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      endTime.hour,
+      endTime.minute,
+    );
+
+    if (endDateTime.isBefore(startDateTime)) {
+      endDateTime = endDateTime.add(Duration(days: 1));
+    }
+
+    if (!endDateTime.isAfter(startDateTime)) {
+      endDateTime = startDateTime.add(const Duration(minutes: 1));
+    }
+
+    try {
+      if (widget.existingEvent == null) return;
+
+      await FirestoreService().updateEvent(
+        eventId: widget.existingEvent!.id,
+        uid: uid,
+        title: titleCtrl.text,
+        description: descCtrl.text,
+        startTime: startDateTime,
+        endTime: endDateTime,
+      );
+
+      final updatedEvent = CalendarEvent(
+        id: widget.existingEvent!.id,
+        title: titleCtrl.text,
+        description: descCtrl.text,
+        date: selectedDate,
+        startTime: startDateTime,
+        endTime: endDateTime,
+      );
+
+      widget.onEventAdded(updatedEvent);
+      Navigator.pop(context);
+    } catch (e) {
+      print("Failed to update event: $e");
     }
   }
 

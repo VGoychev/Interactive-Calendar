@@ -7,8 +7,11 @@ import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
 class Login extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
-  const Login(
-      {super.key, required this.onToggleTheme, required this.themeMode});
+  const Login({
+    super.key, 
+    required this.onToggleTheme, 
+    required this.themeMode,
+  });
   @override
   State<StatefulWidget> createState() => LoginState();
 }
