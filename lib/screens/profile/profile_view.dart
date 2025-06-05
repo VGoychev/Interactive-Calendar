@@ -101,7 +101,7 @@ class ProfileView extends StatelessWidget {
           SizedBox(
             width: screenWidth,
             child: TextButton(
-                onPressed: () => state.logout(context),
+                onPressed: () => _showDeleteConfirmation(context),
                 child: const Text(
                   'Log out',
                   style: TextStyle(fontSize: 20, color: Colors.red),
@@ -192,6 +192,57 @@ class ProfileView extends StatelessWidget {
                 );
               }),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetContext) {
+        final screenWidth = MediaQuery.of(context).size.width;
+        return SizedBox(
+          width: screenWidth,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Log out of your account?',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red),
+                        onPressed: () => state.logout(context),
+                        child: const Text('Log out'),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                        child: const Text('Cancel',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },
