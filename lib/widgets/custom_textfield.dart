@@ -23,7 +23,7 @@ class CustomTextfield extends StatelessWidget {
       textInputAction: textInputAction,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         alignLabelWithHint: true,
       ),
       maxLines: maxLines,

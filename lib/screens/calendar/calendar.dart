@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/screens/add_event/add_event.dart';
 import 'package:interactive_calendar_app/screens/calendar/calendar_view.dart';
-import 'package:interactive_calendar_app/screens/profile/profile_view.dart';
+import 'package:interactive_calendar_app/screens/profile/profile.dart';
 import 'package:interactive_calendar_app/services/auth_service.dart';
 import 'package:interactive_calendar_app/services/firestore_service.dart';
 import 'package:interactive_calendar_app/services/shared_prefs_service.dart';
@@ -12,7 +12,7 @@ import 'package:interactive_calendar_app/utils/events/event_helpers.dart';
 class Calendar extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
-  
+
   const Calendar(
       {super.key, required this.onToggleTheme, required this.themeMode});
 
@@ -127,9 +127,11 @@ class CalendarState extends State<Calendar> {
             isDateSelectedFromMonth: _isDateSelectedFromMonth,
             uid: _uid!,
           ),
-          ProfileView(
+          Profile(
             selectedIndex: _selectedIndex,
             onItemTapped: _onItemTapped,
+            onToggleTheme: widget.onToggleTheme,
+            themeMode: widget.themeMode,
           ),
         ],
       ),

@@ -8,8 +8,8 @@ class Login extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final ThemeMode themeMode;
   const Login({
-    super.key, 
-    required this.onToggleTheme, 
+    super.key,
+    required this.onToggleTheme,
     required this.themeMode,
   });
   @override
@@ -20,28 +20,43 @@ class LoginState extends State<Login> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late final TextEditingController passCtrl, emailCtrl;
   final SharedPrefsService _prefsService = SharedPrefsService();
-  bool rememberMe = false;
-
-  void onRememberMeChanged(bool? value) {
-    setState(() {
-      rememberMe = value ?? false;
-    });
-  }
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
     passCtrl = TextEditingController();
     emailCtrl = TextEditingController();
-
     _initPrefs();
   }
 
   Future<void> _initPrefs() async {
-    await _prefsService.init();
+    try {
+      await _prefsService.init();
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    passCtrl.dispose();
+    emailCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> login() async {
+    if (!_isInitialized) return;
+
     final email = emailCtrl.text.trim();
     final password = passCtrl.text;
 
@@ -58,7 +73,7 @@ class LoginState extends State<Login> {
       passCtrl.clear();
 
       if (context.mounted) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => Calendar(
@@ -79,6 +94,13 @@ class LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return LoginView(this);
   }
 }

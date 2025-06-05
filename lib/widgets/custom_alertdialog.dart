@@ -18,7 +18,7 @@ class CustomAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CalendarEvent? realEvent = event.event as CalendarEvent?;
+    final CalendarEvent? realEvent = event.event;
     final String? description = event.description?.trim();
     final bool hasDescription = description != null && description.isNotEmpty;
 
@@ -66,7 +66,7 @@ class CustomAlertDialog extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "${event.title}",
+          event.title,
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         Text(

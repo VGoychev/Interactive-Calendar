@@ -41,6 +41,7 @@ class FirestoreService {
       'name': name.trim(),
       'email': email.trim(),
       'createdAt': createdAt,
+      'uid': uid,
     });
   }
 
@@ -58,6 +59,19 @@ class FirestoreService {
     } catch (e) {
       print('Error fetching events: $e');
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserById(String uid) async {
+    try {
+      final doc = await _firestore.collection('users').doc(uid).get();
+      if (doc.exists) {
+        return doc.data();
+      }
+      return null;
+    } catch (e) {
+      print('Error getting user by ID: $e');
+      return null;
     }
   }
 
@@ -119,5 +133,17 @@ class FirestoreService {
     }
 
     await docRef.update(updatedData);
+  }
+
+  Stream<List<CalendarEvent>> getUserEventsStream(String uid) {
+    return _firestore
+        .collection('events')
+        .where('createdBy', isEqualTo: uid)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return CalendarEvent.fromMap(doc.data());
+      }).toList();
+    });
   }
 }

@@ -16,8 +16,11 @@ class AddEventView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
               child: CustomTextfield(
                 controller: state.titleCtrl,
                 label: 'Title',
@@ -26,7 +29,8 @@ class AddEventView extends StatelessWidget {
             InkWell(
               onTap: () => state.pickDate(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
                 margin: const EdgeInsets.fromLTRB(12, 10, 12, 4),
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -50,8 +54,8 @@ class AddEventView extends StatelessWidget {
                   child: InkWell(
                     onTap: () => state.pickStartTime(context),
                     child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 12),
                       margin: const EdgeInsets.fromLTRB(12, 10, 12, 4),
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -73,8 +77,8 @@ class AddEventView extends StatelessWidget {
                   child: InkWell(
                     onTap: () => state.pickEndTime(context),
                     child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 14, horizontal: 12),
                       margin: const EdgeInsets.fromLTRB(12, 10, 12, 4),
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -102,21 +106,22 @@ class AddEventView extends StatelessWidget {
                 maxLines: 3,
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 12, top: 10),
-                  child: ElevatedButton(
-                    onPressed: state.widget.isEditing
-                        ? state.updateEvent
-                        : state.createEvent,
-                    child: Text(state.widget.isEditing ? 'Edit' : 'Add'),
-                  ),
-                )),
-              ],
-            )
           ],
+        ),
+      ),
+      bottomSheet: Padding(
+        padding:
+            const EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 36),
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: state.isTitleValid
+                ? (state.widget.isEditing
+                    ? state.updateEvent
+                    : state.createEvent)
+                : null,
+            child: Text(state.widget.isEditing ? 'Edit' : 'Add'),
+          ),
         ),
       ),
     );

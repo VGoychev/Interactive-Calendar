@@ -22,15 +22,28 @@ class AddEvent extends StatefulWidget {
 class AddEventState extends State<AddEvent> {
   late final TextEditingController titleCtrl, descCtrl;
   DateTime selectedDate = DateTime.now();
-  TimeOfDay startTime = TimeOfDay(hour: 9, minute: 0);
-  TimeOfDay endTime = TimeOfDay(hour: 10, minute: 0);
+  TimeOfDay startTime = const TimeOfDay(hour: 9, minute: 0);
+  TimeOfDay endTime = const TimeOfDay(hour: 10, minute: 0);
   String uid = 'guest';
+  bool isTitleValid = false;
 
   @override
   void initState() {
     super.initState();
     _loadUid();
     _initializeControllers();
+    _validateTitle();
+  }
+
+  void _validateTitle() {
+    titleCtrl.addListener(() {
+      final isValid = titleCtrl.text.trim().isNotEmpty;
+      if (isValid != isTitleValid) {
+        setState(() {
+          isTitleValid = isValid;
+        });
+      }
+    });
   }
 
   void _initializeControllers() {
@@ -72,7 +85,7 @@ class AddEventState extends State<AddEvent> {
 
     // Fix cross-midnight events --- if end time is before, adding one day
     if (endDateTime.isBefore(startDateTime)) {
-      endDateTime = endDateTime.add(Duration(days: 1));
+      endDateTime = endDateTime.add(const Duration(days: 1));
     }
 
     if (!endDateTime.isAfter(startDateTime)) {
@@ -122,7 +135,7 @@ class AddEventState extends State<AddEvent> {
     );
 
     if (endDateTime.isBefore(startDateTime)) {
-      endDateTime = endDateTime.add(Duration(days: 1));
+      endDateTime = endDateTime.add(const Duration(days: 1));
     }
 
     if (!endDateTime.isAfter(startDateTime)) {

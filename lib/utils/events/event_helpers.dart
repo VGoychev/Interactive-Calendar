@@ -85,7 +85,7 @@ void addEventToController({
         DateTime(startTime.year, startTime.month, startTime.day);
 
     // Enforcing visual minimum height of 40 minutes to visualize the event normal
-    final visualMinDuration = Duration(minutes: 40);
+    final visualMinDuration = const Duration(minutes: 40);
     final realDuration = endTime.difference(startTime);
     final adjustedEndTime = realDuration < visualMinDuration
         ? startTime.add(visualMinDuration)

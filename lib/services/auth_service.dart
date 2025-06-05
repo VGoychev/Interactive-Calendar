@@ -4,7 +4,7 @@ import 'package:interactive_calendar_app/services/firestore_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final firestoreService = FirestoreService();  
+  final firestoreService = FirestoreService();
 
   Future<String?> registerUser({
     required String name,
@@ -30,6 +30,8 @@ class AuthService {
       await userCredential.user!.updateDisplayName(name);
       await userCredential.user!.reload();
 
+      await logout();
+
       return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -42,6 +44,7 @@ class AuthService {
         return 'Registration failed. Please try again.';
       }
     } catch (e) {
+      print('Registration error: $e');
       return 'An unknown error occurred.';
     }
   }
@@ -68,6 +71,17 @@ class AuthService {
 
   Future<String> getCurrentUserId() async {
     final user = _auth.currentUser;
-    return user?.uid ?? 'guest';
+    if (user == null) {
+      return 'guest';
+    }
+    return user.uid;
+  }
+
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut();
   }
 }

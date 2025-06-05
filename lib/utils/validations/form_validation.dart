@@ -19,7 +19,7 @@ class FormValidation {
     return null;
   }
 
-   static String? validateEmail(String? email) {
+  static String? validateEmail(String? email) {
     if (email == null || email.isEmpty) {
       return 'Enter your email';
     }

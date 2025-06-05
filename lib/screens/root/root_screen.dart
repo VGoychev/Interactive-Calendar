@@ -27,10 +27,19 @@ class _RootScreenState extends State<RootScreen> {
   }
 
   Future<void> _checkAuthStatus() async {
-    final uid = await AuthService().getCurrentUserId();
-    if (!mounted) return;
-    await Future.delayed(const Duration(milliseconds: 600));
-    setState(() => _uid = uid);
+    try {
+      final uid = await AuthService().getCurrentUserId();
+      if (!mounted) return;
+
+      setState(() {
+        _uid = uid;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _uid = 'guest';
+      });
+    }
   }
 
   @override
@@ -62,20 +71,16 @@ class _RootScreenState extends State<RootScreen> {
 
   Widget _buildAnimatedTransition(Widget child) {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 600),
-      switchInCurve: Curves.easeOutBack,
+      duration: const Duration(milliseconds: 300),
+      switchInCurve: Curves.easeOut,
       switchOutCurve: Curves.easeIn,
-      transitionBuilder: (Widget child, Animation<double> animation) {
-        final fade = CurvedAnimation(parent: animation, curve: Curves.easeOut);
-        final scale = Tween<double>(begin: 0.85, end: 1.0).animate(animation);
-
+      transitionBuilder: (child, animation) {
         return FadeTransition(
-          opacity: fade,
-          child: ScaleTransition(scale: scale, child: child),
+          opacity: animation,
+          child: child,
         );
       },
       child: child,
     );
   }
-  
 }
