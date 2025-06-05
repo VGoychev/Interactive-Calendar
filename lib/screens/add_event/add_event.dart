@@ -44,6 +44,8 @@ class AddEventState extends State<AddEvent> {
         });
       }
     });
+
+    isTitleValid = titleCtrl.text.trim().isNotEmpty;
   }
 
   void _initializeControllers() {
