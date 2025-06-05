@@ -40,11 +40,6 @@ class CalendarState extends State<Calendar> {
   void initState() {
     super.initState();
     _initPrefs();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     _loadEventsForCurrentUser();
   }
 
