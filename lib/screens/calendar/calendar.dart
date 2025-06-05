@@ -40,16 +40,26 @@ class CalendarState extends State<Calendar> {
   void initState() {
     super.initState();
     _initPrefs();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _loadEventsForCurrentUser();
   }
 
   Future<void> _loadEventsForCurrentUser() async {
     final uid = await AuthService().getCurrentUserId();
+    if (!mounted) return;
+    
     setState(() {
       _uid = uid;
     });
+    
     if (uid != 'guest') {
       final events = await FirestoreService().getUserEvents(uid);
+      if (!mounted) return;
+      
       for (CalendarEvent event in events) {
         addEventToController(
             event: event, controller: _eventController, context: context);

@@ -26,6 +26,7 @@ class AddEventState extends State<AddEvent> {
   TimeOfDay endTime = const TimeOfDay(hour: 10, minute: 0);
   String uid = 'guest';
   bool isTitleValid = false;
+  Color selectedColor = Colors.orange.shade300;
 
   @override
   void initState() {
@@ -62,10 +63,23 @@ class AddEventState extends State<AddEvent> {
     endTime = event != null
         ? TimeOfDay.fromDateTime(event.endTime)
         : const TimeOfDay(hour: 10, minute: 0);
+
+    if (event != null) {
+      selectedColor = event.color;
+    }
   }
 
   Future<void> _loadUid() async {
     uid = await AuthService().getCurrentUserId();
+  }
+
+  String colorToHex(Color color) =>
+      '#${color.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+
+  void setColor(Color color) {
+    setState(() {
+      selectedColor = color;
+    });
   }
 
   void createEvent() async {
@@ -94,6 +108,8 @@ class AddEventState extends State<AddEvent> {
       endDateTime = startDateTime.add(const Duration(minutes: 1));
     }
 
+    String hexColor = colorToHex(selectedColor);
+
     try {
       final id = await FirestoreService().createEvent(
         uid: uid,
@@ -101,6 +117,7 @@ class AddEventState extends State<AddEvent> {
         description: descCtrl.text,
         startTime: startDateTime,
         endTime: endDateTime,
+        color: hexColor,
       );
 
       final event = CalendarEvent(
@@ -110,7 +127,9 @@ class AddEventState extends State<AddEvent> {
         date: selectedDate,
         startTime: startDateTime,
         endTime: endDateTime,
+        color: selectedColor,
       );
+
       widget.onEventAdded(event);
 
       Navigator.pop(context);
@@ -143,6 +162,7 @@ class AddEventState extends State<AddEvent> {
     if (!endDateTime.isAfter(startDateTime)) {
       endDateTime = startDateTime.add(const Duration(minutes: 1));
     }
+    String hexColor = colorToHex(selectedColor);
 
     try {
       if (widget.existingEvent == null) return;
@@ -154,6 +174,7 @@ class AddEventState extends State<AddEvent> {
         description: descCtrl.text,
         startTime: startDateTime,
         endTime: endDateTime,
+        color: hexColor,
       );
 
       final updatedEvent = CalendarEvent(
@@ -163,6 +184,7 @@ class AddEventState extends State<AddEvent> {
         date: selectedDate,
         startTime: startDateTime,
         endTime: endDateTime,
+        color: selectedColor,
       );
 
       widget.onEventAdded(updatedEvent);

@@ -63,7 +63,7 @@ class CustomDayView extends StatelessWidget {
         margin: const EdgeInsets.all(2),
         padding: padding,
         decoration: BoxDecoration(
-          color: Colors.orangeAccent,
+          color: event.color,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Align(

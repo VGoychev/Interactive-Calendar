@@ -7,7 +7,7 @@ class CalendarEvent {
   final DateTime date;
   final DateTime startTime;
   final DateTime endTime;
-  final Color? color;
+  final Color color;
 
   CalendarEvent({
     required this.id,
@@ -16,7 +16,7 @@ class CalendarEvent {
     required this.date,
     required this.startTime,
     required this.endTime,
-    this.color,
+    required this.color,
   });
 
   factory CalendarEvent.fromMap(Map<String, dynamic> map) {
@@ -31,9 +31,14 @@ class CalendarEvent {
     );
   }
 
-  static Color? _parseHexColor(String? hexColor) {
-    if (hexColor == null) return null;
+  static Color _parseHexColor(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
+
+    //Adding the full opacity of the color
+    
+    if (hexColor.length == 6) {
+      hexColor = 'FF$hexColor';
+    }
     return Color(int.parse(hexColor, radix: 16));
   }
 }

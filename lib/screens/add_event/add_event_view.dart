@@ -106,6 +106,41 @@ class AddEventView extends StatelessWidget {
                 maxLines: 3,
               ),
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text("Type of the event",
+                      style: TextStyle(fontWeight: FontWeight.w400)),
+                  const SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildColorOption(
+                          context,
+                          Colors.orange.shade300,
+                          'public',
+                          state.selectedColor,
+                          () => state.setColor(Colors.orange.shade300)),
+                      _buildColorOption(
+                          context,
+                          Colors.blue,
+                          'personal',
+                          state.selectedColor,
+                          () => state.setColor(Colors.blue)),
+                      _buildColorOption(
+                          context,
+                          Colors.purple.shade300,
+                          'work',
+                          state.selectedColor,
+                          () => state.setColor(Colors.purple.shade300)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -124,6 +159,46 @@ class AddEventView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildColorOption(
+    BuildContext context,
+    Color color,
+    String type,
+    Color selectedColor,
+    VoidCallback onTap,
+  ) {
+    final isSelected = color == selectedColor;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: isSelected
+                  ? Border.all(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      width: 4,
+                    )
+                  : null,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          type,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.6),
+          ),
+        )
+      ],
     );
   }
 }

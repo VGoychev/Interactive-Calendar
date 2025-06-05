@@ -41,7 +41,7 @@ class ProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      state.name ?? "Unknown",
+                      state.name ?? "Guest",
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 18),

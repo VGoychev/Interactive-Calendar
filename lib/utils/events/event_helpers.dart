@@ -52,7 +52,7 @@ void addEventToController({
       endTime: firstEventEnd,
       title: '${event.title} (Day 1)',
       description: event.description,
-      color: Theme.of(context).colorScheme.primary,
+      color: event.color,
       event: event,
     );
 
@@ -74,7 +74,7 @@ void addEventToController({
       endTime: endTime,
       title: '${event.title} (Day 2)',
       description: event.description,
-      color: Theme.of(context).colorScheme.primary.withOpacity(0.8),
+      color: event.color,
       event: event,
     );
 
@@ -97,7 +97,7 @@ void addEventToController({
       endTime: adjustedEndTime,
       title: event.title,
       description: event.description,
-      color: Theme.of(context).colorScheme.primary,
+      color: event.color,
       event: event,
     );
 

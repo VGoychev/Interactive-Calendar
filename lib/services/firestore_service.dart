@@ -10,7 +10,7 @@ class FirestoreService {
     required String description,
     required DateTime startTime,
     required DateTime endTime,
-    String color = '#2196F3',
+    required String color,
   }) async {
     final docRef = _firestore.collection('events').doc();
     final now = DateTime.now();
@@ -104,7 +104,7 @@ class FirestoreService {
     required String description,
     required DateTime startTime,
     required DateTime endTime,
-    String? color,
+    required String color,
   }) async {
     final docRef = _firestore.collection('events').doc(eventId);
 
@@ -126,11 +126,8 @@ class FirestoreService {
       'startTime': startTime.toIso8601String(),
       'endTime': endTime.toIso8601String(),
       'updatedAt': DateTime.now().toIso8601String(),
+      'color': color
     };
-
-    if (color != null) {
-      updatedData['color'] = color;
-    }
 
     await docRef.update(updatedData);
   }

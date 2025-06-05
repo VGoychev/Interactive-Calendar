@@ -92,7 +92,7 @@ class CustomWeekView extends StatelessWidget {
         margin: const EdgeInsets.all(2),
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         decoration: BoxDecoration(
-          color: Colors.orangeAccent,
+          color: event.color,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Align(
