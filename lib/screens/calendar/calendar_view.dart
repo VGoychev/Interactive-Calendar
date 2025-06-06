@@ -58,13 +58,31 @@ class CalendarView extends StatelessWidget {
           ),
         ],
       ),
-      body: getCalendarView(
-        context: context,
-        eventController: eventController,
-        selectedView: selectedView,
-        onDateSelected: onDateSelected,
-        selectedDate: selectedDate,
-        uid: uid,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(1.0, 0.0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey(selectedView),
+          child: getCalendarView(
+            context: context,
+            eventController: eventController,
+            selectedView: selectedView,
+            onDateSelected: onDateSelected,
+            selectedDate: selectedDate,
+            uid: uid,
+          ),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,

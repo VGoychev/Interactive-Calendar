@@ -134,13 +134,24 @@ class LoginView extends StatelessWidget {
                             ..onTap = () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (_) => Calendar(
+                                PageRouteBuilder(
+                                  transitionDuration:
+                                      const Duration(milliseconds: 500),
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      Calendar(
                                     onToggleTheme: state.widget.onToggleTheme,
                                     themeMode: isDarkMode
                                         ? ThemeMode.dark
                                         : ThemeMode.light,
                                   ),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
                                 ),
                               );
                             })

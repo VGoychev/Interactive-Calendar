@@ -75,13 +75,21 @@ class LoginState extends State<Login> {
       if (context.mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => Calendar(
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 1000),
+            pageBuilder: (context, animation, secondaryAnimation) => Calendar(
               onToggleTheme: widget.onToggleTheme,
-              themeMode: Theme.of(context).brightness == Brightness.dark 
-                  ? ThemeMode.dark 
+              themeMode: Theme.of(context).brightness == Brightness.dark
+                  ? ThemeMode.dark
                   : ThemeMode.light,
             ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
           ),
         );
       }
