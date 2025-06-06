@@ -33,7 +33,7 @@ class CalendarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = state.widget.themeMode == ThemeMode.dark;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: CustomSegmentedButton(
@@ -80,10 +80,12 @@ class CalendarView extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: state.onAddEventClick,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: uid == 'guest'
+          ? null
+          : FloatingActionButton(
+              onPressed: state.onAddEventClick,
+              child: const Icon(Icons.add),
+            ),
     );
   }
 }

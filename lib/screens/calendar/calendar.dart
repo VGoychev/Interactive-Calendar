@@ -46,21 +46,31 @@ class CalendarState extends State<Calendar> {
   Future<void> _loadEventsForCurrentUser() async {
     final uid = await AuthService().getCurrentUserId();
     if (!mounted) return;
-    
+
     setState(() {
       _uid = uid;
     });
-    
+
     if (uid != 'guest') {
       final events = await FirestoreService().getUserEvents(uid);
       if (!mounted) return;
-      
+
       for (CalendarEvent event in events) {
         addEventToController(
             event: event, controller: _eventController, context: context);
       }
     } else {
-      // Handle not logged in ---- GUEST USER
+      const guestColorHex = '#ffb74d';
+      final guestEvents =
+          await FirestoreService().getGuestEventsByColor(guestColorHex);
+
+      for (CalendarEvent event in guestEvents) {
+        addEventToController(
+          event: event,
+          controller: _eventController,
+          context: context,
+        );
+      }
     }
   }
 

@@ -143,4 +143,15 @@ class FirestoreService {
       }).toList();
     });
   }
+
+  Future<List<CalendarEvent>> getGuestEventsByColor(String hexColor) async {
+  final snapshot = await _firestore
+      .collection('events')
+      .where('color', isEqualTo: hexColor)
+      .get();
+
+  return snapshot.docs
+      .map((doc) => CalendarEvent.fromMap(doc.data()))
+      .toList();
+}
 }

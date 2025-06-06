@@ -39,19 +39,26 @@ class CustomAlertDialog extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Event Details", style: TextStyle(fontSize: 16)),
-            TextButton(
-              onPressed: () => openEditEventScreen(
-                context: context,
-                event: event,
-                eventController: eventController,
-              ),
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                textStyle: const TextStyle(fontSize: 14),
-              ),
-              child: const Text('Edit'),
-            )
+            Padding(
+              padding: uid == 'guest'
+                  ? const EdgeInsets.only(top: 8, bottom: 8,)
+                  : const EdgeInsets.all(0),
+              child:
+                  const Text("Event Details", style: TextStyle(fontSize: 16)),
+            ),
+            if (uid != 'guest')
+              TextButton(
+                onPressed: () => openEditEventScreen(
+                  context: context,
+                  event: event,
+                  eventController: eventController,
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  textStyle: const TextStyle(fontSize: 14),
+                ),
+                child: const Text('Edit'),
+              )
           ],
         ),
         const Divider(thickness: 0.5, height: 0.5),
@@ -97,14 +104,15 @@ class CustomAlertDialog extends StatelessWidget {
   Widget _buildActions(BuildContext context) {
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton(
-            onPressed: () => _showDeleteConfirmation(context),
-            child:
-                const Text("Delete Event", style: TextStyle(color: Colors.red)),
+        if (uid != 'guest')
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: () => _showDeleteConfirmation(context),
+              child: const Text("Delete Event",
+                  style: TextStyle(color: Colors.red)),
+            ),
           ),
-        ),
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(

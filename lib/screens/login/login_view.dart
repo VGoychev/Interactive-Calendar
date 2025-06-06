@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_calendar_app/screens/calendar/calendar.dart';
 import 'package:interactive_calendar_app/screens/login/login.dart';
 import 'package:interactive_calendar_app/screens/register/register.dart';
 import 'package:interactive_calendar_app/utils/validations/form_validation.dart';
@@ -11,7 +12,7 @@ class LoginView extends StatelessWidget {
   const LoginView(this.state, {super.key});
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = state.widget.themeMode == ThemeMode.dark;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -115,6 +116,35 @@ class LoginView extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              RichText(
+                text: TextSpan(
+                    text: 'Continue as ',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: [
+                      TextSpan(
+                          text: 'guest.',
+                          style: const TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => Calendar(
+                                    onToggleTheme: state.widget.onToggleTheme,
+                                    themeMode: isDarkMode
+                                        ? ThemeMode.dark
+                                        : ThemeMode.light,
+                                  ),
+                                ),
+                              );
+                            })
+                    ]),
               ),
             ],
           ),
