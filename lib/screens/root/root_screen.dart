@@ -54,13 +54,17 @@ class _RootScreenState extends State<RootScreen> {
     } else if (_uid != 'guest') {
       content = Calendar(
         onToggleTheme: widget.onToggleTheme,
-        themeMode: widget.themeMode,
+        themeMode: Theme.of(context).brightness == Brightness.dark 
+                  ? ThemeMode.dark 
+                  : ThemeMode.light,
       );
     } else {
       content = Login(
         key: const ValueKey('login'),
         onToggleTheme: widget.onToggleTheme,
-        themeMode: widget.themeMode,
+        themeMode: Theme.of(context).brightness == Brightness.dark 
+                  ? ThemeMode.dark 
+                  : ThemeMode.light,
       );
     }
 

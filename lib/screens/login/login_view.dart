@@ -71,9 +71,9 @@ class LoginView extends StatelessWidget {
                   label: 'Enter your password',
                 ),
               ),
-              const SizedBox(
-                height: 20),
-              ElevatedButton(onPressed: state.login, child: const Text('Log in')),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                  onPressed: state.login, child: const Text('Log in')),
               const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
@@ -97,7 +97,10 @@ class LoginView extends StatelessWidget {
                                   (context, animation, secondaryAnimation) =>
                                       Register(
                                 onToggleTheme: state.widget.onToggleTheme,
-                                themeMode: state.widget.themeMode,
+                                themeMode: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ThemeMode.dark
+                                    : ThemeMode.light,
                               ),
                               transitionsBuilder: (context, animation,
                                   secondaryAnimation, child) {
