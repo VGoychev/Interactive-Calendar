@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
+import 'package:interactive_calendar_app/models/user.dart';
 import 'package:interactive_calendar_app/screens/profile/profile_view.dart';
 import 'package:interactive_calendar_app/screens/root/root_screen.dart';
 import 'package:interactive_calendar_app/services/auth_service.dart';
@@ -25,10 +25,9 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileState extends State<Profile> {
-  String? _name;
-  String? _email;
-  DateTime? _createdAt;
+  User? _user;
   Stream<List<CalendarEvent>>? _events;
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +40,7 @@ class ProfileState extends State<Profile> {
       final data = await FirestoreService().getUserById(user.uid);
       if (data != null) {
         setState(() {
-          _name = data['name'];
-          _email = data['email'];
-          _createdAt = (data['createdAt'] as Timestamp).toDate();
+          _user = data;
           _events = FirestoreService().getUserEventsStream(user.uid);
         });
       }
@@ -65,10 +62,9 @@ class ProfileState extends State<Profile> {
     }
   }
 
-  String? get name => _name;
-  String? get email => _email;
-  DateTime? get createdAt => _createdAt;
-Stream<List<CalendarEvent>>? get eventsStream => _events;
+  User? get user => _user;
+  Stream<List<CalendarEvent>>? get eventsStream => _events;
+
   @override
   Widget build(BuildContext context) {
     return ProfileView(this);

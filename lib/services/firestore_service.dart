@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
+import 'package:interactive_calendar_app/models/user.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -32,19 +33,22 @@ class FirestoreService {
     return docRef.id;
   }
 
-  Future<void> addUser(
-      {required String uid,
-      required String name,
-      required String email,
-      required Timestamp createdAt}) async {
+  Future<void> addUser({
+    required String uid,
+    required String name,
+    required String email,
+    required Timestamp createdAt,
+  }) async {
     final userDoc = _firestore.collection('users').doc(uid);
 
-    await userDoc.set({
-      'name': name.trim(),
-      'email': email.trim(),
-      'createdAt': createdAt,
-      'uid': uid,
-    });
+    final user = User(
+      uid: uid,
+      name: name.trim(),
+      email: email.trim(),
+      createdAt: createdAt.toDate(),
+    );
+
+    await userDoc.set(user.toMap());
   }
 
   Future<List<CalendarEvent>> getUserEvents(String uid) async {
@@ -69,11 +73,11 @@ class FirestoreService {
     }
   }
 
-  Future<Map<String, dynamic>?> getUserById(String uid) async {
+  Future<User?> getUserById(String uid) async {
     try {
       final doc = await _firestore.collection('users').doc(uid).get();
       if (doc.exists) {
-        return doc.data();
+        return User.fromMap(doc.data()!);
       }
       return null;
     } catch (e, stackTrace) {

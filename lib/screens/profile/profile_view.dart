@@ -5,13 +5,14 @@ import 'package:intl/intl.dart';
 
 class ProfileView extends StatelessWidget {
   final ProfileState state;
+
   const ProfileView(this.state, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isDarkMode = state.widget.themeMode == ThemeMode.dark;
-
+    final user = state.user;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Profile"),
@@ -41,7 +42,7 @@ class ProfileView extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      state.name ?? "Guest",
+                      user?.name ?? "Guest",
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 18),
@@ -51,7 +52,7 @@ class ProfileView extends StatelessWidget {
                         const Icon(Icons.email_outlined),
                         const SizedBox(width: 10),
                         Text(
-                          state.email ?? "Unknown",
+                          user?.email ?? "Unknown",
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context)
@@ -69,8 +70,8 @@ class ProfileView extends StatelessWidget {
                         const Icon(Icons.account_box_outlined),
                         const SizedBox(width: 10),
                         Text(
-                          state.createdAt != null
-                              ? "User since: ${DateFormat('MMMM d, y').format(state.createdAt!)}"
+                          user?.createdAt != null
+                              ? "User since: ${DateFormat('MMMM d, y').format(user!.createdAt)}"
                               : "User since: Unknown",
                           style: TextStyle(
                             fontSize: 14,
