@@ -8,6 +8,7 @@ class CalendarEvent {
   final DateTime startTime;
   final DateTime endTime;
   final Color color;
+  final String createdBy;
 
   CalendarEvent({
     required this.id,
@@ -17,6 +18,7 @@ class CalendarEvent {
     required this.startTime,
     required this.endTime,
     required this.color,
+    required this.createdBy,
   });
 
   factory CalendarEvent.fromMap(Map<String, dynamic> map) {
@@ -28,6 +30,7 @@ class CalendarEvent {
       startTime: DateTime.parse(map['startTime']),
       endTime: DateTime.parse(map['endTime']),
       color: _parseHexColor(map['color']),
+      createdBy: map['createdBy'],
     );
   }
 
@@ -35,7 +38,7 @@ class CalendarEvent {
     hexColor = hexColor.toUpperCase().replaceAll('#', '');
 
     //Adding the full opacity of the color
-    
+
     if (hexColor.length == 6) {
       hexColor = 'FF$hexColor';
     }

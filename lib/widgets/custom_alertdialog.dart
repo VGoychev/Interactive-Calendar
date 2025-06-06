@@ -40,13 +40,16 @@ class CustomAlertDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: uid == 'guest'
-                  ? const EdgeInsets.only(top: 8, bottom: 8,)
-                  : const EdgeInsets.all(0),
+              padding: uid != 'guest' && event.event?.createdBy == uid
+                  ? const EdgeInsets.all(0)
+                  : const EdgeInsets.only(
+                      top: 12,
+                      bottom: 14,
+                    ),
               child:
                   const Text("Event Details", style: TextStyle(fontSize: 16)),
             ),
-            if (uid != 'guest')
+            if (uid != 'guest' && event.event?.createdBy == uid)
               TextButton(
                 onPressed: () => openEditEventScreen(
                   context: context,
@@ -104,7 +107,7 @@ class CustomAlertDialog extends StatelessWidget {
   Widget _buildActions(BuildContext context) {
     return Stack(
       children: [
-        if (uid != 'guest')
+        if (uid != 'guest' && event.event?.createdBy == uid)
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(

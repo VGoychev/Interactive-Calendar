@@ -52,19 +52,31 @@ class CalendarState extends State<Calendar> {
     });
 
     if (uid != 'guest') {
-      final events = await FirestoreService().getUserEvents(uid);
+
+      final userEvents = await FirestoreService().getUserEvents(uid);
+      const publicEventColor = '#ffb74d';
+
+      final publicEvents =
+          await FirestoreService().getGuestEventsByColor(publicEventColor);
+
+      
+      final allEventsMap = {
+        for (CalendarEvent event in [...userEvents, ...publicEvents]) event.id: event
+      };
+      final allEvents = allEventsMap.values.toList();
+
       if (!mounted) return;
 
-      for (CalendarEvent event in events) {
+      for (CalendarEvent event in allEvents) {
         addEventToController(
             event: event, controller: _eventController, context: context);
       }
     } else {
-      const guestColorHex = '#ffb74d';
-      final guestEvents =
-          await FirestoreService().getGuestEventsByColor(guestColorHex);
+      const publicEventColor = '#ffb74d';
+      final publicEvents =
+          await FirestoreService().getGuestEventsByColor(publicEventColor);
 
-      for (CalendarEvent event in guestEvents) {
+      for (CalendarEvent event in publicEvents) {
         addEventToController(
           event: event,
           controller: _eventController,

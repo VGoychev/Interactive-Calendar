@@ -128,6 +128,7 @@ class AddEventState extends State<AddEvent> {
         startTime: startDateTime,
         endTime: endDateTime,
         color: selectedColor,
+        createdBy: uid
       );
 
       widget.onEventAdded(event);
@@ -185,6 +186,7 @@ class AddEventState extends State<AddEvent> {
         startTime: startDateTime,
         endTime: endDateTime,
         color: selectedColor,
+        createdBy: uid
       );
 
       widget.onEventAdded(updatedEvent);
