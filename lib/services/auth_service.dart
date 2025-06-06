@@ -62,7 +62,7 @@ class AuthService {
       } else if (e.code == 'wrong-password') {
         return 'Incorrect password.';
       } else {
-        return 'Login failed. Please try again.';
+        return 'Invalid email or password. Please try again.';
       }
     } catch (_) {
       return 'An unknown error occurred.';

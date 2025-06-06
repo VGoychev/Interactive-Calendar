@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
 
@@ -56,8 +58,13 @@ class FirestoreService {
         final data = doc.data();
         return CalendarEvent.fromMap(data);
       }).toList();
-    } catch (e) {
-      print('Error fetching events: $e');
+    } catch (e, stackTrace) {
+      log(
+        'Error fetching events',
+        name: 'EventService',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return [];
     }
   }
@@ -69,8 +76,13 @@ class FirestoreService {
         return doc.data();
       }
       return null;
-    } catch (e) {
-      print('Error getting user by ID: $e');
+    } catch (e, stackTrace) {
+      log(
+        'Error getting user by ID',
+        name: 'UserService',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -145,13 +157,13 @@ class FirestoreService {
   }
 
   Future<List<CalendarEvent>> getGuestEventsByColor(String hexColor) async {
-  final snapshot = await _firestore
-      .collection('events')
-      .where('color', isEqualTo: hexColor)
-      .get();
+    final snapshot = await _firestore
+        .collection('events')
+        .where('color', isEqualTo: hexColor)
+        .get();
 
-  return snapshot.docs
-      .map((doc) => CalendarEvent.fromMap(doc.data()))
-      .toList();
-}
+    return snapshot.docs
+        .map((doc) => CalendarEvent.fromMap(doc.data()))
+        .toList();
+  }
 }
