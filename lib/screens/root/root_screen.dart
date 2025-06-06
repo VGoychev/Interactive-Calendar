@@ -19,11 +19,22 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   String? _uid;
-
+  bool _showLoader = true;
   @override
   void initState() {
     super.initState();
     _checkAuthStatus();
+    _startLoadingDelay();
+  }
+
+  void _startLoadingDelay() {
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() {
+          _showLoader = false;
+        });
+      }
+    });
   }
 
   Future<void> _checkAuthStatus() async {
@@ -46,7 +57,7 @@ class _RootScreenState extends State<RootScreen> {
   Widget build(BuildContext context) {
     Widget content;
 
-    if (_uid == null) {
+    if (_uid == null || _showLoader) {
       content = const Center(
         key: ValueKey('loading'),
         child: CircularProgressIndicator(),
@@ -54,17 +65,17 @@ class _RootScreenState extends State<RootScreen> {
     } else if (_uid != 'guest') {
       content = Calendar(
         onToggleTheme: widget.onToggleTheme,
-        themeMode: Theme.of(context).brightness == Brightness.dark 
-                  ? ThemeMode.dark 
-                  : ThemeMode.light,
+        themeMode: Theme.of(context).brightness == Brightness.dark
+            ? ThemeMode.dark
+            : ThemeMode.light,
       );
     } else {
       content = Login(
         key: const ValueKey('login'),
         onToggleTheme: widget.onToggleTheme,
-        themeMode: Theme.of(context).brightness == Brightness.dark 
-                  ? ThemeMode.dark 
-                  : ThemeMode.light,
+        themeMode: Theme.of(context).brightness == Brightness.dark
+            ? ThemeMode.dark
+            : ThemeMode.light,
       );
     }
 
