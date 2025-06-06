@@ -8,7 +8,7 @@ class Register extends StatefulWidget {
 
   const Register(
       {super.key, required this.onToggleTheme, required this.themeMode});
-      
+
   @override
   State<StatefulWidget> createState() => RegisterState();
 }
@@ -19,11 +19,12 @@ class RegisterState extends State<Register> {
       passCtrl,
       emailCtrl,
       confirmPassCtrl;
-  bool agreedToTerms = false;
+  bool _agreedToTerms = false;
+  bool _isLoading = false;
 
   void setAgreement(bool? value) {
     setState(() {
-      agreedToTerms = value ?? false;
+      _agreedToTerms = value ?? false;
     });
   }
 
@@ -39,13 +40,14 @@ class RegisterState extends State<Register> {
   Future<void> register() async {
     if (!formKey.currentState!.validate()) return;
 
-    if (!agreedToTerms) {
+    if (!_agreedToTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text("You must agree to the terms & conditions.")),
       );
       return;
     }
+
     final name = nameCtrl.text.trim();
     final email = emailCtrl.text.trim();
     final password = passCtrl.text.trim();
@@ -58,13 +60,15 @@ class RegisterState extends State<Register> {
       return;
     }
 
-    final authService = AuthService();
+    setState(() => _isLoading = true); // Start loading
 
-    String? result = await authService.registerUser(
+    String? result = await AuthService().registerUser(
       name: name,
       email: email,
       password: passCtrl.text,
     );
+
+    setState(() => _isLoading = false); // Stop loading
 
     if (result == null) {
       emailCtrl.clear();
@@ -81,6 +85,9 @@ class RegisterState extends State<Register> {
       );
     }
   }
+
+  get agreedToTerms => _agreedToTerms;
+  get isLoading => _isLoading;
 
   @override
   Widget build(BuildContext context) {
