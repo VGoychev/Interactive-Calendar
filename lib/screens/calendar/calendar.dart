@@ -158,7 +158,9 @@ class CalendarState extends State<Calendar> {
             selectedIndex: _selectedIndex,
             onItemTapped: _onItemTapped,
             onToggleTheme: widget.onToggleTheme,
-            themeMode: widget.themeMode,
+            themeMode: Theme.of(context).brightness == Brightness.dark
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
           ),
         ],
       ),
