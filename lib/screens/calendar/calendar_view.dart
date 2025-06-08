@@ -36,7 +36,10 @@ class CalendarView extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: CustomSegmentedButton(
+        toolbarHeight: 70,
+        automaticallyImplyLeading: false,
+        flexibleSpace: SafeArea(child: Align(alignment: Alignment.center,
+        child: CustomSegmentedButton(
           selected: {selectedView},
           onSelectionChanged: (newSelection) {
             onViewChanged(newSelection.first);
@@ -46,7 +49,7 @@ class CalendarView extends StatelessWidget {
             ButtonSegment(value: 'Week', label: Text('Week')),
             ButtonSegment(value: 'Day', label: Text('Day')),
           ],
-        ),
+        ),)),
         actions: [
           IconButton(
             onPressed: state.widget.onToggleTheme,

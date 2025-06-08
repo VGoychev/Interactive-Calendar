@@ -1,6 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:interactive_calendar_app/firebase_options.dart';
 import 'package:interactive_calendar_app/models/calendar_event.dart';
 import 'package:interactive_calendar_app/screens/root/root_screen.dart';
@@ -13,6 +14,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown, 
+  ]);
+
 
   try {
     final prefsService = SharedPrefsService();
