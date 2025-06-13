@@ -141,7 +141,8 @@ class LoginView extends StatelessWidget {
                                           secondaryAnimation) =>
                                       Calendar(
                                     onToggleTheme: state.widget.onToggleTheme,
-                                    themeMode: isDarkMode
+                                    themeMode: Theme.of(context).brightness ==
+                                            Brightness.dark
                                         ? ThemeMode.dark
                                         : ThemeMode.light,
                                   ),
